@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/auth', jobsRouter);
+app.use('/api/v1/jobs', jobsRouter);
 
 app.use(notFoundMiddleWare);
 app.use(errorHandlerMiddleware);

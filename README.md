@@ -3,8 +3,7 @@
 #### Run The App Locally
 
 - npm run install-dependencies
-- rename .env.temp to .env
-- setup values ofr -MONGO_URL, JWT_SECRET, JWT_LIFETIME
+- setup values for -MONGO_URL, JWT_SECRET, JWT_LIFETIME
 - npm start
 - visit url http://localhost:3000/
 
@@ -77,3 +76,42 @@ export { register, login, updateUser };
 
 - jobControler.js
 - create functions
+
+### Postman
+
+- URL globar var
+- JOBIFY Collection
+- auth and jobs folders
+- setup routes
+
+### User Model
+
+- <b>models</b> folder
+- User.js
+- setup schema
+- name, email password, lastName, location
+- all `{type:String}`
+
+### Validate Email
+
+```js
+validate:{
+    validator:{field}=>{return 2>1},
+    message:'Please provide valid email'
+}
+```
+
+- install validator package
+
+```sh
+npm install validator
+```
+
+### Register User - Initial Setup
+
+- authController
+- import User model
+- setup temporary try/catch
+- await `User.create(req.body)`
+- if success 201 with `json({user})(temp)`
+- if error 500 with `json({msg:'there was an error'}`
