@@ -35,3 +35,45 @@
 - Using react-router dom version :6
 - import {BrowserRouter, Routes, Route, Link} from 'react-router-dom';
 - Connect to browser's URL with BrowswerRouter
+
+### context
+
+- `import React, { useReducer, useContext } from 'react';`
+
+### server
+
+- `"type" : "module"`
+- create server.js
+- modify pakage.json to run with nodemon ( `"start" : "nodemon server"`)
+
+### middleware
+
+- create not-found.js and export notFoundMiddleware function which serve for the unavailable route
+- create error-handler.js to handle the errors.
+
+### connect to DB
+
+- install mongoose
+- create connect.js
+- in server.js create start() function
+- get connection string
+- setup as MONGO_URL in .env
+- provide credentials and DB Name
+
+### Auth controller and Route Structure
+
+- create <b>controllers</b> foler
+- authRoutes.js
+
+```js
+export { register, login, updateUser };
+```
+
+- authRoutes.js
+- setup express router
+- import functions from authController.js
+
+### Job controller and Route Structure
+
+- jobControler.js
+- create functions
