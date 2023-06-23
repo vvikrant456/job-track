@@ -115,3 +115,119 @@ npm install validator
 - await `User.create(req.body)`
 - if success 201 with `json({user})(temp)`
 - if error 500 with `json({msg:'there was an error'}`
+
+### setup express-async-errors
+
+- handles try and catch part efficiently
+- use throw Error('error') instead of next(error)
+
+### Http status codes
+
+- constants for status codes
+- less bugs
+- provides consistency
+- easier to read/manage
+- import/setup in authController and error-handler
+- setup defaultError
+
+### Custom errors
+
+### Refactor Errors
+
+- create errors folder
+- create custom-api, bad-request, not-found, index.js files
+- add proper imports
+- setup index.js just like in the front-end
+- import `{BadRequestError}` in authController
+- gotcha 'index.js'
+
+### Hash Passwords
+
+- one way street, only compared hashed values
+- using bcryptjs
+
+```sh
+npm install bcryptjs
+```
+
+- import bcryptjs in User Model
+- hash passwords before saving them into database (in user schema)
+- compare password when logging
+- await genSalt(10)
+- await hash(password, salt)
+- await compare(requestPassword, currentPassword)
+- [mongoose middleware]
+- UserSchema.pre('save' async function(){"this" points back to UserSchmea})
+
+### Mongoose - Custome Instance Methods
+
+- (https://mongoosejs.com/docs/guide.html#methods)
+
+- UserSchema.methods.createJWT = function(){console.log(this)}
+- register controller
+- right after User.create()
+- invoke user.createJWT()
+
+### JWT
+
+- token
+
+```sh
+npm i jsonwebtoken
+```
+
+- User model
+- import jwt from 'jsonwebtoken'
+- jwt.sign(payload, secret, options)
+- createJWT
+
+```js
+return jwt.sign({ userId: this._id }, 'jwtSecret', { expiresIn: '1d' });
+```
+
+### JWT_SECRET and JWT_LIFETIME
+
+- [Keys Generator](https://www.allkeysgenerator.com/)
+- RESTART SERVER
+
+### Complete Register
+
+- password :{select:false}
+- complete response
+
+### Concurrently
+
+- front-end backend (server)
+- run separate terminals
+- [concurrently](https://www.npmjs.com/package/concurrently)
+
+```sh
+  npm install concurrently --save-dev
+```
+
+- package.json
+
+```js
+// --kill-others switch, all commands are killed if one dies
+// --prefix client - folder
+// cd client and npm start
+// escape quotes
+
+"scripts":{
+    "server:"nodemon server --ignore client",
+    "client":"npm start --prefix client",
+    "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
+},
+```
+
+### Cors Error
+
+- two fixes (cors package and proxy)
+
+### Cors package
+
+```sh
+npm install cors
+```
+
+### Proxy
