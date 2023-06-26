@@ -2,12 +2,18 @@ import express from 'express';
 import dotenv from 'dotenv';
 import 'express-async-errors';
 dotenv.config();
+import morgan from 'morgan';
 const app = express();
+
 app.use(express.json());
 
 //middleware
 import notFoundMiddleWare from './middleware/not-found.js';
 import errorHandlerMiddleware from './middleware/error-handler.js';
+
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan('dev'));
+}
 
 //db and authencateUser
 import connectDB from './db/connect.js';
@@ -18,7 +24,12 @@ import jobsRouter from './routes/jobsRoutes.js';
 
 app.get('/', (req, res) => {
   //   throw new Error('error');
-  res.send('Welcome!');
+  res.json({ msg: 'welcome!' });
+});
+
+app.get('/api/v1', (req, res) => {
+  //   throw new Error('error');
+  res.json({ msg: 'API!' });
 });
 
 app.use('/api/v1/auth', authRouter);

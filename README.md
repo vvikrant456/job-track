@@ -231,3 +231,192 @@ npm install cors
 ```
 
 ### Proxy
+
+- access from anywhere
+- don't want to use full url
+
+[cra proxy](https://create-react-app.dev/docs/proxying-api-requests-in-development/)
+
+```js
+"proxy" :'http://localhost:5000'
+```
+
+- my preference to remove trailing slash /
+- restart app
+
+```js
+const fetchData = async () => {
+  try {
+    // const response = await fetch('/data.json'); //fetching from own server creates no problem
+    const response = await fetch('/api/v1'); //but fetching from other server creating problem
+    const data = await response.json();
+
+    console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+useEffect(() => {
+  fetchData();
+}, []);
+```
+
+### Register Setup
+
+```js
+appContext.js;
+
+const initialState = {
+  user: null,
+  toke: null,
+  userLocation: '',
+};
+```
+
+- actions.js REGISTER_USER_BEGIN, SUCCESS, ERROR
+- import reducer, appContext
+
+```js
+appContext.js;
+const registeruser = async (currentUser) => {
+  console.log(currentUser);
+};
+```
+
+- import in Register.js
+
+```js
+Register.js;
+
+const currentUser = { name, email, password };
+if (isMember) {
+  console.log('already a meber');
+} else {
+  registerUser(currentUser);
+}
+
+return (
+  <button type="submit" className="btn btn-block" disabled={isLoading}>
+    submit
+  </button>
+);
+```
+
+### Axios
+
+- [axiox docs](https://axios-http.com/docs/intro)
+
+```sh
+npm install axiso
+```
+
+### Register
+
+```js
+appContext.js;
+```
+
+### Navigate to Dashboard
+
+```js
+Register.js;
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const Register = () => {
+  const { user } = useAppContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
+    }
+  }, [user, navigate]);
+};
+```
+
+### Morgan Package
+
+- http logger middleware for node.js
+- [morgan docs](https://www.npmjs.com/package/morgan)
+
+```sh
+npm install morgan
+```
+
+```js
+import morgan from 'morgan';
+
+if (processs.env.NODE_ENV !== 'production') {
+  app.user(morgan('dev'));
+}
+```
+
+### UnauthenticatedError
+
+- unauthenticated.js in errors
+- import/export
+
+```js
+import { StatusCodes } from 'http-status-codes';
+import { customAPIError } from './custom-api.js';
+
+class UnauthenticatedError extends CustomAPIError {
+  constructor(message) {
+    super(message);
+    this.statusCode = StatusCodes.UNAUTHORIZED;
+  }
+}
+```
+
+### Compare Password
+
+User.js in models
+
+```js
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+  const isMatch = await bcrypt.compare(candidatePassword, this.password);
+  return isMatch;
+};
+```
+
+### Login Controller
+
+```js
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    throw new BadRequestError('Please provide all  values');
+  }
+  const user = await User.findOne({ email }).select('+password');
+  if (!user) {
+    throw new UnAuthenticatedError('Invalid Credentials');
+  }
+
+  // console.log(user);
+
+  const isPasswordCorrect = await user.comparePassword(password);
+
+  if (!isPasswordCorrect) {
+    throw new UnAuthenticatedError('Invalid Credentials');
+  }
+  user.password = undefined;
+  const token = user.createJWT();
+  res.status(StatusCodes.OK).json({ user, token, location: user.location });
+  // res.send('login user');
+};
+```
+
+### Login User Setup
+
+- action.js LOGIN_USER_BEGIN, SUCCESS, ERROR
+- import reducer, appContext
+
+```js
+appContext.js;
+const loginUser = async (currentUser) => {
+  console.log(currentUser);
+};
+```
