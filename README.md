@@ -420,3 +420,79 @@ const loginUser = async (currentUser) => {
   console.log(currentUser);
 };
 ```
+
+### Nested pages in React Router 6
+
+### Dashboard pages
+
+- delete Dashboard.js
+- fix imports/exports
+- replace in home route
+
+```js
+<Route path="/" element={<div>dashboard</div>} />
+```
+
+- create <b>dashboard</b> directory in pages
+- create AddJob, AllJob, Profile, stats, sharedLayout, index.js
+- setup basic returns
+- export all with index.js
+- import all pages in App.js
+
+```js
+App.js
+
+<Route path ='/'>
+<Route path ='stats' element ={<Stats/>}/>
+<Route path='profile' element={Profile}></Route>
+<Route path= 'all-jobs' element={<AllJobs />} ></Route>
+<Route path="add-job" element={<AddJob />} ></Route>
+```
+
+### Shared Layout
+
+```js
+App.js
+
+<Route path ='/' element = {<SharedLayout/>} >
+```
+
+```js
+SharedLayout.js;
+
+import { Outlet, Link } from 'react-router-dom';
+import Wrapper from '../../assets/wrappers/SharedLayout';
+
+const SharedLayout = () => {
+  return (
+    <Wrapper>
+      <nav>
+        <Link to="add-job">add job</Link>
+        <Link to="all-jobs">all jobs</Link>
+      </nav>
+      <Outlet />
+    </Wrapper>
+  );
+};
+
+export default SharedLayout;
+```
+
+### Protected Route
+
+- create ProtectedRoute.js in pages
+- import/export
+- wrap SharedLayout in App.js
+
+### Navbar, SmallSidebar, BigSidebar
+
+- create Navbar, SmallSidebar, BigSidebar in components
+- import Wrappers from assets/wrappers
+- simple return
+- import /export
+
+### React Icons
+
+```sh
+npm install react-icons
+```
