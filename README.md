@@ -496,3 +496,21 @@ export default SharedLayout;
 ```sh
 npm install react-icons
 ```
+
+### Nav Links component
+
+- create Navlinks component
+- styles still set from Wrapper
+- also can setup in link.js, preference
+
+### Authencticate User Setup
+
+- create auth.s in <b> middleware</b>
+
+```js
+const auth = async (req, res, next) => {
+  console.log('authenticate user');
+  next();
+};
+export default auth;
+```

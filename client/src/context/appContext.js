@@ -13,6 +13,8 @@ import {
   SETUP_USER_BEGIN,
   SETUP_USER_ERROR,
   SETUP_USER_SUCESS,
+  TOGGLE_SIDEBAR,
+  LOGOUT_USER,
 } from './actions';
 
 const token = localStorage.getItem('token');
@@ -28,6 +30,7 @@ const initialState = {
   token: token,
   userLocation: userLocation || '',
   jobLocation: userLocation || '',
+  showSidebar: false,
 };
 
 const AppContext = React.createContext();
@@ -130,9 +133,24 @@ const AppProvider = ({ children }) => {
     clearAlert();
   };
 
+  const toggleSidebar = () => {
+    dispatch({ type: TOGGLE_SIDEBAR });
+  };
+
+  const logoutUser = () => {
+    dispatch({ type: LOGOUT_USER });
+    removeUserFromLocalStorage();
+  };
+
   return (
     <AppContext.Provider
-      value={{ ...state, displayAlert, registerUser, loginUser, setupUser }}
+      value={{
+        ...state,
+        displayAlert,
+        setupUser,
+        toggleSidebar,
+        logoutUser,
+      }}
     >
       {children}
     </AppContext.Provider>
