@@ -15,7 +15,7 @@ html {
   /* colors */
   --primary-50: #e0fcff;
   --primary-100: #bef8fd;
-  --primary-200: #87eaf2;
+  --primary-200: hsl(184, 57%, 24%);
   --primary-300: #54d1db;
   --primary-400: #38bec9;
   --primary-500: #2cb1bc;
