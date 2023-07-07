@@ -54,7 +54,6 @@ const Register = () => {
         alertText: 'User created! Redirecting...',
       });
     }
-    // console.log(values);
   };
   useEffect(() => {
     if (user) {
