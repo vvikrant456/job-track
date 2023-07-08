@@ -11,11 +11,16 @@ const PageBtnContainer = () => {
   // console.log(pages);
 
   const nextPage = () => {
-    console.log('next page');
+    let newPage = page + 1;
+    if (newPage > numOfPages) newPage = 1;
+    // console.log(newPage);
+    changePage(newPage);
   };
 
   const prevPage = () => {
-    console.log('Prev page');
+    let newPage = page - 1;
+    if (newPage < 1) newPage = numOfPages;
+    changePage(newPage);
   };
 
   return (

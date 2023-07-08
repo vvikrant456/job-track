@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import Loading from './Loading';
 import Job from './Job';
+import Alert from './Alert';
 import Wrapper from '../assets/wrappers/JobsContainer';
 import { useAppContext } from '../context/appContext';
 import PageBtnContainer from './PageBtnContainer';
@@ -17,11 +18,13 @@ const JobsContainer = () => {
     searchType,
     sort,
     numOfPages,
+    showAlert,
   } = useAppContext();
 
   useEffect(() => {
     getJobs();
-  }, [search, searchStatus, searchType, sort]);
+    // eslint-disable-next-line
+  }, [page, search, searchStatus, searchType, sort]);
 
   if (isLoading) {
     return <Loading center />;
@@ -37,6 +40,7 @@ const JobsContainer = () => {
 
   return (
     <Wrapper>
+    {showAlert && <Alert/>}
       <h5>
         {totalJobs} job{jobs.length > 1 && 's'} found{' '}
       </h5>

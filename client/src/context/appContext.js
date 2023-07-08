@@ -28,6 +28,7 @@ import {
   SHOW_STATS_SUCESS,
   CLEAR_FILTERS,
   CHANGE_PAGE,
+  DELETE_JOB_ERROR,
 } from './actions';
 
 const token = localStorage.getItem('token');
@@ -205,9 +206,9 @@ const AppProvider = ({ children }) => {
   };
 
   const getJobs = async () => {
-    const { search, searchStatus, searchType, sort } = state;
+    const { page, search, searchStatus, searchType, sort } = state;
 
-    let url = `/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
+    let url = `/jobs?page=${page}&status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
     if (search) url = url + `&search=${search}`;
     // console.log(url);
     dispatch({ type: GET_JOBS_BEGIN });
@@ -225,8 +226,8 @@ const AppProvider = ({ children }) => {
         },
       });
     } catch (error) {
-      console.log(error.response);
-      // logoutUser();
+      // console.log(error.response);
+      logoutUser();
     }
     clearAlert();
   };
@@ -264,9 +265,13 @@ const AppProvider = ({ children }) => {
       await authFetch.delete(`/jobs/${jobId}`);
       getJobs();
     } catch (error) {
-      console.log(error.response);
-      // logoutUser()
+      if (error.response.status === 401) return;
+      dispatch({
+        type: DELETE_JOB_ERROR,
+        payload: { msg: error.response.data.msg },
+      });
     }
+    clearAlert();
   };
 
   const showStats = async () => {
@@ -282,8 +287,8 @@ const AppProvider = ({ children }) => {
         },
       });
     } catch (error) {
-      console.log(error.response);
-      // logoutUser()
+      // console.log(error.response);
+      logoutUser();
     }
     clearAlert();
   };
