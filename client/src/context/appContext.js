@@ -1,4 +1,4 @@
-import React, { useReducer, useContext } from 'react';
+import React, { useReducer, useContext, useEffect } from 'react';
 import reducer from './reducers';
 import axios from 'axios';
 import {
@@ -29,27 +29,26 @@ import {
   CLEAR_FILTERS,
   CHANGE_PAGE,
   DELETE_JOB_ERROR,
+  GET_CURRENT_USER_BEGIN,
+  GET_CURRENT_USER_SUCESS,
 } from './actions';
 
-const token = localStorage.getItem('token');
-const user = localStorage.getItem('user');
-const userLocation = localStorage.getItem('location');
-
 const initialState = {
+  userLoading: true,
   isLoading: false,
   showAlert: false,
   alertText: '',
   alertType: '',
-  user: user ? JSON.parse(user) : null,
-  token: token,
-  userLocation: userLocation || '',
+  user: null,
+
+  userLocation: '',
 
   showSidebar: false,
   isEditing: false,
   editJobId: '',
   position: '',
   company: '',
-  jobLocation: userLocation || '',
+  jobLocation: '',
   jobTypeOptions: ['full-time', 'part-time', 'remote', 'internship'],
   jobType: 'full-time',
   statusOptions: ['interview', 'declined', 'pending'],
@@ -75,15 +74,6 @@ const AppProvider = ({ children }) => {
   const authFetch = axios.create({ baseURL: '/api/v1' });
 
   //request
-  authFetch.interceptors.request.use(
-    (config) => {
-      config.headers['Authorization'] = `Bearer ${state.token}`;
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
 
   //response
   authFetch.interceptors.response.use(
@@ -108,18 +98,6 @@ const AppProvider = ({ children }) => {
     }, 3000);
   };
 
-  const addUserToLocalStorage = ({ user, token, location }) => {
-    localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('token', token);
-    localStorage.setItem('location', location);
-  };
-
-  const removeUserFromLocalStorage = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    localStorage.removeItem('location');
-  };
-
   const setupUser = async ({ currentUser, endPoint, alertText }) => {
     dispatch({ type: SETUP_USER_BEGIN });
     try {
@@ -128,13 +106,12 @@ const AppProvider = ({ children }) => {
         currentUser
       );
 
-      const { user, token, location } = data;
+      const { user, location } = data;
       dispatch({
         type: SETUP_USER_SUCESS,
-        payload: { user, token, location, alertText },
+        payload: { user, location, alertText },
       });
       //local storage later
-      addUserToLocalStorage({ user, token, location });
     } catch (error) {
       dispatch({
         type: SETUP_USER_ERROR,
@@ -148,21 +125,20 @@ const AppProvider = ({ children }) => {
     dispatch({ type: TOGGLE_SIDEBAR });
   };
 
-  const logoutUser = () => {
+  const logoutUser = async () => {
+    await authFetch.get('/auth/logout');
     dispatch({ type: LOGOUT_USER });
-    removeUserFromLocalStorage();
   };
 
   const updateUser = async (currentUser) => {
     dispatch({ type: UPDATE_USER_BEGIN });
     try {
       const { data } = await authFetch.patch('/auth/updateUser', currentUser);
-      const { user, location, token } = data;
+      const { user, location } = data;
       dispatch({
         type: UPDATE_USER_SUCESS,
-        payload: { user, location, token },
+        payload: { user, location },
       });
-      addUserToLocalStorage({ user, location, token });
     } catch (error) {
       if (error.response.status !== 401) {
         dispatch({
@@ -300,6 +276,25 @@ const AppProvider = ({ children }) => {
   const changePage = (page) => {
     dispatch({ type: CHANGE_PAGE, payload: { page } });
   };
+
+  const getCurrentUser = async () => {
+    dispatch({ type: GET_CURRENT_USER_BEGIN });
+    try {
+      const { data } = await authFetch('/auth/getCurrentUser');
+      const { user, location } = data;
+      dispatch({
+        type: GET_CURRENT_USER_SUCESS,
+        payload: { user, location },
+      });
+    } catch (error) {
+      if (error.response.status === 401) return;
+      logoutUser();
+    }
+  };
+
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
 
   return (
     <AppContext.Provider
